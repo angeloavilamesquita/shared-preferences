@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">SharedPreferences</string>
+    <string name="txt_login_title">Login</string>
+    <string name="txt_login_btn_login">Login</string>
+    <string name="txt_login_subtitle">Tela de login que utiliza usuário e senha para autenticação baseado em Shared Preferences</string>
+    <string name="txt_field_required">Campos Obrigatórios</string>
+    <string name="txt_credentials_wrong">Usuário e/ou Senha inválidos</string>
+</resources>
