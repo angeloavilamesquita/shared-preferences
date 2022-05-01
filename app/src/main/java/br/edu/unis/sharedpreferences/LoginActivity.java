@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -12,16 +13,28 @@ import android.widget.Toast;
 
 public class LoginActivity extends AppCompatActivity {
 
-    private EditText edtUser;
-    private EditText edtPassword;
+    public static final String SP_LOGIN = "credential";
     private static final String USER = "test";
     private static final String PASSWORD = "test";
+    private EditText edtUser;
+    private EditText edtPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        if (hasCredentialsSaved()) {
+            goDashboardActivity();
+        }
         loadWidgets();
+    }
+
+    private boolean hasCredentialsSaved() {
+        return this.getSharedPreferences(SP_LOGIN, MODE_PRIVATE).contains(SP_LOGIN);
+    }
+
+    private void goDashboardActivity() {
+        startActivity(new Intent(this, DashboardActivity.class));
     }
 
     private void loadWidgets() {
@@ -35,16 +48,17 @@ public class LoginActivity extends AppCompatActivity {
     private void login() {
         hideKeyboard();
         if (this.isFieldsEmpty()) {
-            Toast.makeText(this, R.string.txt_field_required, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.login_txt_fields_required, Toast.LENGTH_SHORT).show();
             this.edtUser.requestFocus();
             return;
         }
         if (!this.authenticate()) {
-            Toast.makeText(this, R.string.txt_credentials_wrong, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.login_txt_credentials_wrong, Toast.LENGTH_SHORT).show();
             this.edtUser.requestFocus();
             return;
         }
-        startActivity(new Intent(this, DashboardActivity.class));
+        saveCredentials();
+        goDashboardActivity();
     }
 
     private void hideKeyboard() {
@@ -66,6 +80,11 @@ public class LoginActivity extends AppCompatActivity {
         }
         cleanFields();
         return false;
+    }
+
+    private void saveCredentials() {
+        SharedPreferences.Editor editor = this.getSharedPreferences(SP_LOGIN, MODE_PRIVATE).edit();
+        editor.putString(SP_LOGIN, edtUser.getText().toString()).apply();
     }
 
     private void cleanFields() {
